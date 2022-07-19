@@ -1,31 +1,45 @@
 import { View, Text, FlatList, ScrollView } from 'react-native'
+import { useEffect, useState } from 'react'
 import { ArrowRightIcon } from 'react-native-heroicons/outline'
 import RestaurantCard from '../Card/RestaurantCard'
-import sushi from '../../assets/images/sushi.jpg'
+import sanityClient from '../../sanity'
 
 const Featured = (props) => {
   const { id, title, description } = props
+  const [restaurants, setRestaurants] = useState([])
 
-  const data = [
-    { id: 1, title: 'Sushi', img: sushi, rating: 4.5, genre: 'Japanese' },
-    { id: 2, title: 'Sushi', img: sushi, rating: 4.5, genre: 'Japanese' },
-    { id: 3, title: 'Sushi', img: sushi, rating: 4.5, genre: 'Japanese' },
-    { id: 4, title: 'Sushi', img: sushi, rating: 4.5, genre: 'Japanese' },
-    { id: 5, title: 'Sushi', img: sushi, rating: 4.5, genre: 'Japanese' },
-    { id: 6, title: 'Sushi', img: sushi, rating: 4.5, genre: 'Japanese' },
-    { id: 7, title: 'Sushi', img: sushi, rating: 4.5, genre: 'Japanese' },
-    { id: 8, title: 'Sushi', img: sushi, rating: 4.5, genre: 'Japanese' },
-    { id: 9, title: 'Sushi', img: sushi, rating: 4.5, genre: 'Japanese' },
-    { id: 10, title: 'Sushi', img: sushi, rating: 4.5, genre: 'Japanese' },
-  ]
+  useEffect(() => {
+    sanityClient
+      .fetch(
+        `*[_type == "featured" && _id == "${id}"] {
+          ...,
+          restaurants[]->{
+            ...,
+            dishes[]->,
+            type->{
+              name
+            }
+          },
+        }[0]
+        `,
+        { id }
+      )
+      .then((res) => setRestaurants(res?.restaurants))
+  }, [id])
 
   const renderItem = ({ item }) => {
     return (
       <RestaurantCard
-        title={item.title}
-        img={item.img}
+        id={item._id}
+        title={item.name}
+        img={item.image}
         rating={item.rating}
-        genre={item.genre}
+        genre={item.type?.name}
+        address={item.address}
+        description={item.short_description}
+        dishes={item.dishes}
+        long={item.long}
+        lat={item.lat}
       />
     )
   }
@@ -38,9 +52,9 @@ const Featured = (props) => {
       </View>
       <Text className='text-xs text-gray-500 px-4'>{description}</Text>
       <FlatList
-        data={data}
+        data={restaurants}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{
