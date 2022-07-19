@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react'
+import { useLayoutEffect, useState, useEffect } from 'react'
 import {
   SafeAreaView,
   View,
@@ -13,14 +13,31 @@ import { UserIcon, ChevronDownIcon } from 'react-native-heroicons/outline'
 import Search from '../../components/Search/Search'
 import Categories from '../../components/Categories/Categories'
 import Featured from '../../components/Featured/Featured'
+import sanityClient from '../../sanity'
 
 const Home = () => {
   const navigation = useNavigation()
+  const [featuredCategories, setFeaturedCategories] = useState([])
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     })
+  }, [])
+
+  useEffect(() => {
+    sanityClient
+      .fetch(
+        `
+          *[_type == "featured"] {
+            ...,
+            restaurants[]->{
+              ...,
+              dishes[]->
+            }
+          }`
+      )
+      .then((res) => setFeaturedCategories(res))
   }, [])
 
   // Bottom padding for Android
@@ -50,18 +67,15 @@ const Home = () => {
         className='bg-gray-100'
       >
         <Categories />
-        <Featured
-          title='Featured'
-          description='Paid placements from our partners'
-        />
-        <Featured
-          title='Tasty Discounts'
-          description="Everyone's been enjoying these juicy discounts!"
-        />
-        <Featured
-          title='Offers near you!'
-          description='Why not support your local restaurants!'
-        />
+
+        {featuredCategories?.map((category) => (
+          <Featured
+            key={category._id}
+            id={category._id}
+            title={category.name}
+            description={category.short_description}
+          />
+        ))}
       </ScrollView>
     </SafeAreaView>
   )
