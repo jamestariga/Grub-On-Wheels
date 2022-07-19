@@ -1,30 +1,30 @@
-import { View, ScrollView, Text, FlatList } from 'react-native'
+import { FlatList } from 'react-native'
+import { useEffect, useState } from 'react'
 import Card from '../Card/Card'
-import sushi from '../../assets/images/sushi.jpg'
+import sanityClient from '../../sanity'
 
 const Categories = () => {
-  const data = [
-    { id: 1, title: 'Sushi', img: sushi },
-    { id: 2, title: 'Sushi', img: sushi },
-    { id: 3, title: 'Sushi', img: sushi },
-    { id: 4, title: 'Sushi', img: sushi },
-    { id: 5, title: 'Sushi', img: sushi },
-    { id: 6, title: 'Sushi', img: sushi },
-    { id: 7, title: 'Sushi', img: sushi },
-    { id: 8, title: 'Sushi', img: sushi },
-    { id: 9, title: 'Sushi', img: sushi },
-    { id: 10, title: 'Sushi', img: sushi },
-  ]
+  const [categories, setCategories] = useState([])
+
+  useEffect(() => {
+    sanityClient
+      .fetch(
+        `
+        *[_type == "category"]
+      `
+      )
+      .then((res) => setCategories(res))
+  }, [])
 
   const renderItem = ({ item }) => {
-    return <Card img={item.img} title={item.title} />
+    return <Card img={item.image} title={item.name} />
   }
 
   return (
     <FlatList
-      data={data}
+      data={categories}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id.toString()}
+      keyExtractor={(item) => item._id.toString()}
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{
