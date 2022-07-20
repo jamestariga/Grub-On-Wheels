@@ -1,11 +1,23 @@
 import { Text, Image, TouchableOpacity } from 'react-native'
 import { urlFor } from '../../sanity'
+import { useNavigation } from '@react-navigation/native'
 
 const Card = (props) => {
-  const { img, title } = props
+  const { id, title, img } = props
+
+  const navigation = useNavigation()
 
   return (
-    <TouchableOpacity className='relative mr-2'>
+    <TouchableOpacity
+      className='relative mr-2'
+      onPress={() => {
+        navigation.navigate('CategoryPage', {
+          id,
+          title,
+          img,
+        })
+      }}
+    >
       <Image
         source={{
           uri: urlFor(img).url(),
