@@ -14,5 +14,11 @@ export default {
       type: 'image',
       title: 'Image of Category',
     },
+    {
+      name: 'restaurants',
+      type: 'array',
+      title: 'Restaurants',
+      of: [{ type: 'reference', to: [{ type: 'restaurant' }] }],
+    },
   ],
 }
