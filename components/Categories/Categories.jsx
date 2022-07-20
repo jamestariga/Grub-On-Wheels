@@ -2,22 +2,33 @@ import { FlatList } from 'react-native'
 import { useEffect, useState } from 'react'
 import Card from '../Card/Card'
 import sanityClient from '../../sanity'
+import { categorySchema } from '../../utils/schema'
 
 const Categories = () => {
   const [categories, setCategories] = useState([])
+  const schema = categorySchema()
 
   useEffect(() => {
-    sanityClient
-      .fetch(
-        `
-        *[_type == "category"]
-      `
-      )
-      .then((res) => setCategories(res))
+    sanityClient.fetch(schema).then((res) => setCategories(res))
   }, [])
 
+  console.log(categories)
+
   const renderItem = ({ item }) => {
-    return <Card img={item.image} title={item.name} />
+    return (
+      <Card
+        id={item._id}
+        title={item.name}
+        img={item.image}
+        rating={item.rating}
+        genre={item.type?.name}
+        address={item.address}
+        description={item.short_description}
+        dishes={item.dishes}
+        long={item.long}
+        lat={item.lat}
+      />
+    )
   }
 
   return (
