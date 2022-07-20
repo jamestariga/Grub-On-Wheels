@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ScrollView } from 'react-native'
+import { View, Text, FlatList } from 'react-native'
 import { useEffect, useState } from 'react'
 import { ArrowRightIcon } from 'react-native-heroicons/outline'
 import RestaurantCard from '../Card/RestaurantCard'
