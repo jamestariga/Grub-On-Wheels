@@ -14,10 +14,13 @@ import Search from '../../components/Search/Search'
 import Categories from '../../components/Categories/Categories'
 import Featured from '../../components/Featured/Featured'
 import sanityClient from '../../sanity'
+import { featuredSchema } from '../../utils/schema'
 
 const Home = () => {
   const navigation = useNavigation()
   const [featuredCategories, setFeaturedCategories] = useState([])
+
+  const schema = featuredSchema()
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -26,18 +29,7 @@ const Home = () => {
   }, [])
 
   useEffect(() => {
-    sanityClient
-      .fetch(
-        `
-          *[_type == "featured"] {
-            ...,
-            restaurants[]->{
-              ...,
-              dishes[]->
-            }
-          }`
-      )
-      .then((res) => setFeaturedCategories(res))
+    sanityClient.fetch(schema).then((res) => setFeaturedCategories(res))
   }, [])
 
   // Bottom padding for Android
