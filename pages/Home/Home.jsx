@@ -38,6 +38,8 @@ const Home = () => {
   // Bottom padding for iOS
   const iosBottom = 100
 
+  const bottom = Platform.OS === 'android' ? androidBottom : iosBottom
+
   return (
     <SafeAreaView className='bg-indigo-500 pt-5'>
       <View className='flex-row pb-3 items-center mx-4 px-2 space-x-2'>
@@ -54,7 +56,7 @@ const Home = () => {
       <Search />
       <ScrollView
         contentContainerStyle={{
-          paddingBottom: Platform.OS === 'android' ? androidBottom : iosBottom,
+          paddingBottom: bottom,
         }}
         className='bg-gray-100'
       >
