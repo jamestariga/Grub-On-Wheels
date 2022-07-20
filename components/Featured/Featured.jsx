@@ -3,27 +3,17 @@ import { useEffect, useState } from 'react'
 import { ArrowRightIcon } from 'react-native-heroicons/outline'
 import RestaurantCard from '../Card/RestaurantCard'
 import sanityClient from '../../sanity'
+import { restaurantSchema } from '../../utils/schema'
 
 const Featured = (props) => {
   const { id, title, description } = props
   const [restaurants, setRestaurants] = useState([])
 
+  const schema = restaurantSchema(id)
+
   useEffect(() => {
     sanityClient
-      .fetch(
-        `*[_type == "featured" && _id == "${id}"] {
-          ...,
-          restaurants[]->{
-            ...,
-            dishes[]->,
-            type->{
-              name
-            }
-          },
-        }[0]
-        `,
-        { id }
-      )
+      .fetch(schema, { id })
       .then((res) => setRestaurants(res?.restaurants))
   }, [id])
 
