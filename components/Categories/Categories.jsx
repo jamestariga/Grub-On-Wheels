@@ -12,7 +12,7 @@ const Categories = () => {
     sanityClient.fetch(schema).then((res) => setCategories(res))
   }, [])
 
-  console.log(categories)
+  // console.log(categories)
 
   const renderItem = ({ item }) => {
     return (

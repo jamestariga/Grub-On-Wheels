@@ -5,18 +5,7 @@ import SortedCategoryCard from '../Card/SortedCategoryCard'
 import { sortedCategorySchema } from '../../utils/schema'
 
 const SortedCategory = (props) => {
-  const {
-    id,
-    title,
-    img,
-    rating,
-    genre,
-    address,
-    description,
-    dishes,
-    long,
-    lat,
-  } = props
+  const { id } = props
 
   const [categories, setCategories] = useState([])
 
@@ -28,7 +17,7 @@ const SortedCategory = (props) => {
       .then((res) => setCategories(res?.restaurants))
   }, [id])
 
-  console.log(categories)
+  // console.log(categories)
 
   return (
     <View className='flex-1'>
