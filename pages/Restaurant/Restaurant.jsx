@@ -1,5 +1,5 @@
 import { ScrollView, View, Text, Image, TouchableOpacity } from 'react-native'
-import { useLayoutEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { useRoute, useNavigation } from '@react-navigation/native'
 import { urlFor } from '../../sanity'
 import {
@@ -11,6 +11,8 @@ import {
 import { QuestionMarkCircleIcon } from 'react-native-heroicons/outline'
 import DishesCard from '../../components/Card/DishesCard'
 import Cart from '../../components/Cart/Cart'
+import { useDispatch } from 'react-redux'
+import { setRestaurant } from '../../features/restaurantSlice'
 
 const Restaurant = () => {
   const {
@@ -29,6 +31,24 @@ const Restaurant = () => {
   } = useRoute()
 
   const navigation = useNavigation()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(
+      setRestaurant({
+        id,
+        title,
+        img,
+        rating,
+        genre,
+        address,
+        description,
+        dishes,
+        long,
+        lat,
+      })
+    )
+  }, [dispatch])
 
   useLayoutEffect(() => {
     navigation.setOptions({
