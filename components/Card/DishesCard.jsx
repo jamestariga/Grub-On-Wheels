@@ -16,7 +16,7 @@ const DishesCard = (props) => {
 
   const dispatch = useDispatch()
   const items = useSelector((state) => selectCartItemsWithId(state, id))
-  console.log(items)
+  // console.log(items)
 
   const addItemsToCart = () => {
     dispatch(addToCart({ id, image, name, description, price }))
