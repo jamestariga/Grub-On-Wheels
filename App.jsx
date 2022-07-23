@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Home from './pages/Home/Home'
 import Restaurant from './pages/Restaurant/Restaurant'
 import Category from './pages/Category/Category'
+import Order from './pages/Order/Order'
+import PreparingOrder from './pages/PreparingOrder/PreparingOrder'
 import { Provider } from 'react-redux'
 import { store } from './store'
 
@@ -18,6 +20,19 @@ const App = () => {
             <Stack.Screen name='HomePage' component={Home} />
             <Stack.Screen name='RestaurantPage' component={Restaurant} />
             <Stack.Screen name='CategoryPage' component={Category} />
+            <Stack.Screen
+              name='OrderPage'
+              component={Order}
+              options={{ presentation: 'modal', headerShown: false }}
+            />
+            <Stack.Screen
+              name='PreparingPage'
+              component={PreparingOrder}
+              options={{
+                presentation: 'fullScreenModal',
+                headerShown: false,
+              }}
+            />
           </Stack.Navigator>
         </TailwindProvider>
       </Provider>
