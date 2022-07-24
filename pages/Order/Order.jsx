@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  Platform,
 } from 'react-native'
 import { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
@@ -48,8 +49,10 @@ const Order = () => {
     dispatch(clearCart())
   }
 
+  const topPadding = Platform.OS === 'android' ? 10 : 0
+
   return (
-    <SafeAreaView className='flex-1 bg-white pt-10'>
+    <SafeAreaView className={`flex-1 bg-white pt-${topPadding}`}>
       <View className='flex-1 bg-gray-100'>
         <View className='p-5 border-b border-[#00CCBB] bg-white shadow-xs'>
           <View>
