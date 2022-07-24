@@ -6,6 +6,7 @@ import Restaurant from './pages/Restaurant/Restaurant'
 import Category from './pages/Category/Category'
 import Order from './pages/Order/Order'
 import PreparingOrder from './pages/PreparingOrder/PreparingOrder'
+import Delivery from './pages/Delivery/Delivery'
 import { Provider } from 'react-redux'
 import { store } from './store'
 
@@ -28,6 +29,14 @@ const App = () => {
             <Stack.Screen
               name='PreparingPage'
               component={PreparingOrder}
+              options={{
+                presentation: 'fullScreenModal',
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name='DeliveryPage'
+              component={Delivery}
               options={{
                 presentation: 'fullScreenModal',
                 headerShown: false,
