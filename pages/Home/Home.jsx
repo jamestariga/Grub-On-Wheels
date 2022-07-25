@@ -15,10 +15,15 @@ import Categories from '../../components/Categories/Categories'
 import Featured from '../../components/Featured/Featured'
 import sanityClient from '../../sanity'
 import { featuredSchema } from '../../utils/schema'
+import * as Location from 'expo-location'
+import { useDispatch } from 'react-redux'
+import { setLocation } from '../../features/locationSlice'
 
 const Home = () => {
   const navigation = useNavigation()
   const [featuredCategories, setFeaturedCategories] = useState([])
+
+  const dispatch = useDispatch()
 
   const schema = featuredSchema()
 
@@ -31,6 +36,21 @@ const Home = () => {
   useEffect(() => {
     sanityClient.fetch(schema).then((res) => setFeaturedCategories(res))
   }, [])
+
+  useEffect(() => {
+    const getLocation = async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      if (status !== 'granted') {
+        return
+      }
+      const location = await Location.getCurrentPositionAsync()
+      const latitude = location.coords.latitude
+      const longitude = location.coords.longitude
+      dispatch(setLocation({ latitude, longitude }))
+      console.log(latitude, longitude)
+    }
+    getLocation()
+  }, [dispatch])
 
   // Bottom padding for Android
   const androidBottom = 150
