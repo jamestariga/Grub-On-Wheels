@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import {
   SafeAreaView,
   View,
@@ -6,19 +7,71 @@ import {
   Image,
   Platform,
 } from 'react-native'
-import MapView from 'react-native-maps'
-import { Marker } from 'react-native-maps'
+import MapView, { Marker } from 'react-native-maps'
+import MapViewDirections from 'react-native-maps-directions'
 import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { selectRestaurant } from '../../features/restaurantSlice'
+import { selectLocation } from '../../features/locationSlice'
 import { XIcon } from 'react-native-heroicons/solid'
 import bikeDelivery from '../../assets/images/bikeDelivery.gif'
 import * as Progress from 'react-native-progress'
 import logo from '../../assets/images/logo.png'
+import { GOOGLE_MAPS_API_KEY } from '@env'
+import { formatter } from '../../utils/helper'
 
 const Delivery = () => {
+  const [distance, setDistance] = useState(null)
+
   const navigation = useNavigation()
   const restaurant = useSelector(selectRestaurant)
+  const location = useSelector(selectLocation)
+  const mapRef = useRef()
+
+  // console.log(location)
+
+  const restaurantLocation = {
+    latitude: restaurant.lat,
+    longitude: restaurant.long,
+  }
+
+  const userLocation = {
+    latitude: location.latitude,
+    longitude: location.longitude,
+  }
+
+  const onRenderMap = () => {
+    setTimeout(() => {
+      mapRef.current.fitToSuppliedMarkers(['origin', 'destination'], {
+        edgePadding: { top: 200, right: 50, bottom: 100, left: 50 },
+      })
+    }, 500)
+
+    return () => clearTimeout()
+  }
+
+  useEffect(() => {
+    if (!location || !restaurant) return
+
+    const getDistance = async () => {
+      fetch(
+        `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial
+        &destinations=${location.latitude},${location.longitude}
+        &origins=${restaurant.lat},${restaurant.long}
+        &key=${GOOGLE_MAPS_API_KEY}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          // console.log(data.rows[0].elements[0])
+          const duration = data.rows[0].elements[0]
+          setDistance(duration)
+        })
+    }
+
+    getDistance()
+  }, [])
+
+  const formattedDistance = formatter(distance?.duration.text)
 
   const topPadding = Platform.OS === 'android' ? 10 : 0
 
@@ -36,7 +89,9 @@ const Delivery = () => {
           <View className='flex-row justify-between'>
             <View>
               <Text className='text-lg text-gray-400'>Estimated Arrival</Text>
-              <Text className='text-4xl font-bold'>35-45 Minutes</Text>
+              <Text className='text-4xl font-bold'>
+                {formattedDistance} Minutes
+              </Text>
             </View>
             <Image source={bikeDelivery} className='h-20 w-20' />
           </View>
@@ -46,6 +101,9 @@ const Delivery = () => {
       </SafeAreaView>
 
       <MapView
+        ref={mapRef}
+        onLayout={onRenderMap}
+        mapPadding={{ bottom: 50 }}
         initialRegion={{
           latitude: restaurant.lat,
           longitude: restaurant.long,
@@ -55,14 +113,25 @@ const Delivery = () => {
         className='flex-1 -mt-10 z-0'
         mapType='mutedStandard'
       >
+        <MapViewDirections
+          origin={restaurantLocation}
+          destination={userLocation}
+          apikey={GOOGLE_MAPS_API_KEY}
+          strokeWidth={3}
+          strokeColor='#00CCBB'
+        />
         <Marker
-          coordinate={{
-            latitude: restaurant.lat,
-            longitude: restaurant.long,
-          }}
-          title={restaurant.title}
+          coordinate={restaurantLocation}
+          title='Origin'
           description={restaurant.description}
           identifier='origin'
+          pinColor='#00CCBB'
+        />
+        <Marker
+          coordinate={userLocation}
+          title='Destination'
+          description={'You are here'}
+          identifier='destination'
           pinColor='#00CCBB'
         />
       </MapView>
