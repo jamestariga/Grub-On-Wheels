@@ -12,6 +12,10 @@ const PreparingOrder = () => {
     setTimeout(() => {
       navigation.navigate('DeliveryPage')
     }, 4000)
+
+    return () => {
+      clearTimeout()
+    }
   }, [])
 
   return (
