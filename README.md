@@ -73,4 +73,5 @@ expo start
 
 - ❌ Implement a login and sign up page
 - ❌ Create a user profile page
+- ❌ Implement a payment system
 - ❌ Create a bottom navigation for the home page, order page, and past order
