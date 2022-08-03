@@ -73,7 +73,7 @@ const Delivery = () => {
 
   const formattedDistance = formatter(distance?.duration.text)
 
-  const topPadding = Platform.OS === 'android' ? 10 : 0
+  const topPadding = Platform.OS === 'android' ? 6 : 0
 
   return (
     <View className={`bg-[#00CCBB] flex-1 pt-${topPadding}`}>
