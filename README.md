@@ -52,7 +52,7 @@ npm install
 sanity start
 ```
 
-Open up the localhost:3333 and start entering your custom data.
+In the <code>sanity.json</code> located in the sanity directory, replace the <code>"projectId"</code> with your own sanity's project ID. Then navigate to localhost:3333 and enter your custom data.
 
 ## 4. ENV Setup
 
@@ -72,6 +72,7 @@ expo start
 ## TODO
 
 - ❌ Implement a login and sign up page
+- ❌ Implement a search function
 - ❌ Create a user profile page
 - ❌ Implement a payment system
 - ❌ Implement a Map support on web
